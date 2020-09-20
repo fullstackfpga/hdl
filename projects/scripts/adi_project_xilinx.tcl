@@ -1,7 +1,7 @@
 
 ## Define the supported tool version
 if {![info exists REQUIRED_VIVADO_VERSION]} {
-  set REQUIRED_VIVADO_VERSION "2019.1"
+  set REQUIRED_VIVADO_VERSION "2019.1.1"
 }
 
 ## Define the ADI_IGNORE_VERSION_CHECK environment variable to skip version check
@@ -43,7 +43,7 @@ set p_prcfg_status ""
 # system_top module)
 #
 # Supported carrier names are: ac701, kc705, vc707, vcu118, kcu105, zed,
-# microzed, zc702, zc706, mitx405, zcu102.
+# microzed, zc702, zc706, mitx405, zcu102, zcu104.
 #
 proc adi_project {project_name {mode 0} {parameter_list {}} } {
 
@@ -115,6 +115,11 @@ proc adi_project {project_name {mode 0} {parameter_list {}} } {
   if [regexp "_zcu102$" $project_name] {
     set p_device "xczu9eg-ffvb1156-2-e"
     set p_board [lindex [lsearch -all -inline [get_board_parts] *zcu102*] end]
+    set sys_zynq 2
+  }
+  if [regexp "_zcu104$" $project_name] {
+    set p_device "xczu7ev-ffvc1156-2-e"
+    set p_board [lindex [lsearch -all -inline [get_board_parts] *zcu104*] end]
     set sys_zynq 2
   }
 
