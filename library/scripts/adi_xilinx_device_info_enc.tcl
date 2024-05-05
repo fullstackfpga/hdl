@@ -42,6 +42,7 @@ set fpga_family_list { \
         { zynq          4 } \
         { versalprime   5 } \
         { versalaicore  6 } \
+        { versalaiedge  8 } \
         { versalpremium 7 }}
 
 set speed_grade_list { \
@@ -51,6 +52,7 @@ set speed_grade_list { \
         { -1H     12 } \
         { -1HV    13 } \
         { -1LV    14 } \
+        { -1LP    15 } \
         { -2      20 } \
         { -2L     21 } \
         { -2LV    22 } \

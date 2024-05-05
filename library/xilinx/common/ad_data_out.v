@@ -78,6 +78,7 @@ module ad_data_out #(
   localparam  SEVEN_SERIES = 1;
   localparam  ULTRASCALE = 2;
   localparam  ULTRASCALE_PLUS = 3;
+  localparam  VERSAL = 4;
 
   // do not instantiate an IDELAYCTRL if no ODELAY is instantiated
   localparam  IODELAY_CTRL_ENABLED = (IODELAY_ENABLE & IODELAY_CTRL);
@@ -170,7 +171,7 @@ module ad_data_out #(
   // oddr
 
   generate
-  if ((FPGA_TECHNOLOGY == ULTRASCALE) || (FPGA_TECHNOLOGY == ULTRASCALE_PLUS)) begin
+  if ((FPGA_TECHNOLOGY == ULTRASCALE) || (FPGA_TECHNOLOGY == ULTRASCALE_PLUS) || (FPGA_TECHNOLOGY == VERSAL)) begin
     ODDRE1 #(
       .SIM_DEVICE (IODELAY_SIM_DEVICE)
     ) i_tx_data_oddr (
@@ -259,6 +260,37 @@ module ad_data_out #(
   end
   endgenerate
 
+  generate
+  if ((FPGA_TECHNOLOGY == VERSAL)
+    && (IODELAY_ENABLE == 1)) begin
+
+    (* IODELAY_GROUP = IODELAY_GROUP *)
+    ODELAYE3 #(
+      .CASCADE ("NONE"),
+      .DELAY_FORMAT (DELAY_FORMAT),
+      .DELAY_TYPE (US_DELAY_TYPE),
+      .DELAY_VALUE (0),
+      .IS_CLK_INVERTED (1'b0),
+      .IS_RST_INVERTED (1'b0),
+      .REFCLK_FREQUENCY (REFCLK_FREQUENCY),
+      .SIM_DEVICE (IODELAY_SIM_DEVICE),
+      .UPDATE_MODE ("ASYNC")
+    ) i_tx_data_odelay (
+      .CASC_RETURN (1'b0),
+      .CASC_IN (1'b0),
+      .CASC_OUT (),
+      .CE (1'b0),
+      .CLK (up_clk),
+      .INC (1'b0),
+      .LOAD (up_dld),
+      .CNTVALUEIN (up_dwdata),
+      .CNTVALUEOUT (up_drdata),
+      .ODATAIN (tx_data_oddr_s),
+      .DATAOUT (tx_data_odelay_s),
+      .RST (1'b0),
+      .EN_VTC (en_vtc));
+  end
+  endgenerate
   // obuf
 
   generate

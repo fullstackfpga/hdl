@@ -80,6 +80,7 @@ module ad_data_in #(
   localparam  SEVEN_SERIES = 1;
   localparam  ULTRASCALE = 2;
   localparam  ULTRASCALE_PLUS = 3;
+  localparam  VERSAL = 4;
 
   // do not instantiate an IDELAYCTRL if no IDELAY is instantiated
   localparam  IODELAY_CTRL_ENABLED = (IODELAY_ENABLE & IODELAY_CTRL);
@@ -146,16 +147,18 @@ module ad_data_in #(
   // delay controller
 
   generate
-  if (IODELAY_CTRL_ENABLED == 0) begin
-    assign delay_locked = 1'b1;
-  end else begin
-    (* IODELAY_GROUP = IODELAY_GROUP *)
-    IDELAYCTRL #(
-      .SIM_DEVICE (IODELAY_CTRL_SIM_DEVICE)
-    ) i_delay_ctrl (
-      .RST (delay_rst),
-      .REFCLK (delay_clk),
-      .RDY (delay_locked));
+  if (FPGA_TECHNOLOGY == SEVEN_SERIES || FPGA_TECHNOLOGY == ULTRASCALE || FPGA_TECHNOLOGY == ULTRASCALE_PLUS) begin 
+    if (IODELAY_CTRL_ENABLED == 0) begin
+      assign delay_locked = 1'b1;
+    end else begin
+      (* IODELAY_GROUP = IODELAY_GROUP *)
+      IDELAYCTRL #(
+        .SIM_DEVICE (IODELAY_CTRL_SIM_DEVICE)
+      ) i_delay_ctrl (
+        .RST (delay_rst),
+        .REFCLK (delay_clk),
+        .RDY (delay_locked));
+    end
   end
   endgenerate
 
@@ -245,11 +248,48 @@ module ad_data_in #(
   end
   endgenerate
 
+  generate
+  if ((FPGA_TECHNOLOGY == VERSAL)
+    && (IODELAY_ENABLE == 1)) begin
+
+    assign up_drdata = up_drdata_s[8:4];
+    (* IODELAY_GROUP = IODELAY_GROUP *)
+    IDELAYE5 #(
+      .CASCADE ("FALSE"),
+      .IS_CLK_INVERTED (1'b0),
+      .IS_RST_INVERTED (1'b0)
+    ) i_rx_data_idelay (
+      .CASC_RETURN (1'b0),
+      .CASC_OUT (),
+      .CE (1'b0),
+      .CLK (up_clk),
+      .INC (1'b0),
+      .LOAD (up_dld),
+      .CNTVALUEIN ({up_dwdata}),
+      .CNTVALUEOUT (up_drdata),
+      .IDATAIN (rx_data_ibuf_s),
+      .DATAOUT (rx_data_idelay_s),
+      .RST (1'b0));
+  end
+  endgenerate
+
   // DDR or SDR
 
   generate
     if (DDR_SDR_N == 1'b1) begin
       // iddr
+      if (FPGA_TECHNOLOGY == VERSAL) begin
+        IDDRE1 #(
+          .DDR_CLK_EDGE (IDDR_CLK_EDGE)
+        ) i_rx_data_iddr (
+          .R (1'b0),
+          .C (rx_clk),
+          .CB (~rx_clk),
+          .D (rx_data_idelay_s),
+          .Q1 (rx_data_p),
+          .Q2 (rx_data_n));
+      end
+
       if (FPGA_TECHNOLOGY == ULTRASCALE || FPGA_TECHNOLOGY == ULTRASCALE_PLUS) begin
         IDDRE1 #(
           .DDR_CLK_EDGE (IDDR_CLK_EDGE)
