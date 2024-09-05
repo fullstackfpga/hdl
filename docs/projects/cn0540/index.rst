@@ -264,9 +264,10 @@ Building the HDL project
 -------------------------------------------------------------------------------
 
 The design is built upon ADI's generic HDL reference design framework.
-ADI does not distribute the bit/elf files of these projects so they
-must be built from the sources available :git-hdl:`here </>`. To get
-the source you must
+ADI distributes the bit/elf files of these projects as part of the
+:dokuwiki:`ADI Kuiper Linux <resources/tools-software/linux-software/kuiper-linux>`.
+If you want to build the sources, ADI makes them available on the
+:git-hdl:`HDL repository </>`. To get the source you must
 `clone <https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository>`__
 the HDL repository, and then build the project as follows:
 
@@ -318,16 +319,16 @@ HDL related
      - Documentation link
    * - AXI_CLKGEN
      - :git-hdl:`library/axi_dmac <library/axi_clkgen>` *
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_clkgen>`
+     - :ref:`here <axi_clkgen>`
    * - AXI_DMAC
      - :git-hdl:`library/axi_dmac <library/axi_dmac>`
      - :ref:`here <axi_dmac>`
    * - AXI_HDMI_TX
      - :git-hdl:`library/axi_hdmi_tx <library/axi_hdmi_tx>` **
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_hdmi_tx>`
+     - :ref:`here <axi_hdmi_tx>`
    * - AXI_SYSID
      - :git-hdl:`library/axi_sysid <library/axi_sysid>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - AXI_SPI_ENGINE
      - :git-hdl:`library/spi_engine/axi_spi_engine <library/spi_engine/axi_spi_engine>`
      - :ref:`here <spi_engine axi>`
@@ -342,7 +343,7 @@ HDL related
      - :ref:`here <spi_engine offload>`
    * - SYSID_ROM
      - :git-hdl:`library/sysid_rom <library/sysid_rom>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
 
 .. admonition:: Legend
    :class: note

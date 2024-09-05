@@ -51,6 +51,26 @@ The data path and clock domains are depicted in the below diagram:
    :align: center
    :alt: AD469X_FMC block diagram
 
+Configuration modes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The SPI_4WIRE configuration parameter defines if CNV signal is linked to PWM or
+to SPI_CS to enable interfacing with a single 4-wire SPI port. By default it is
+set to 0. Depending on the required pin functionality, some hardware
+modifications need to be done on the board and/or ``make`` command:
+
+In case we link CNV signal to PWM:
+
+.. code-block::
+
+   make SPI_4WIRE=0
+
+In case we link CNV signal to SPI_CS:
+
+.. code-block::
+
+   make SPI_4WIRE=1
+
 CPU/Memory interconnects addresses
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -128,6 +148,14 @@ The Software GPIO number is calculated as follows:
      - INOUT
      - 32
      - 86
+   * - gpio[33]
+     - IN
+     - 33
+     - 87
+
+BSY_ALT_GP0 pin can be configured to function as a general-purpose input/output
+(GPIO), the threshold detection alert indicator, the busy indicator, or the
+second serial data output in dual-sdo MODE
 
 Interrupts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,9 +173,10 @@ Building the HDL project
 -------------------------------------------------------------------------------
 
 The design is built upon ADI's generic HDL reference design framework.
-ADI does not distribute the bit/elf files of these projects so they must be
-built from the sources available :git-hdl:`here </>`. To get the source you must
-`clone <https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository>`__
+ADI distributes the bit/elf files of these projects as part of the
+:dokuwiki:`ADI Kuiper Linux <resources/tools-software/linux-software/kuiper-linux>`.
+If you want to build the sources, ADI makes them available on the
+:git-hdl:`HDL repository </>`. To get the source you must
 the HDL repository, and then build the project as follows:
 
 **Linux/Cygwin/WSL**
@@ -156,7 +185,18 @@ the HDL repository, and then build the project as follows:
    :linenos:
 
    user@analog:~$ cd hdl/projects/ad469x_fmc/zed
-   user@analog:~/hdl/projects/ad469x_fmc/zed$ make
+   user@analog:~/hdl/projects/ad469x_fmc/zed$ make SPI_4WIRE=0
+
+The result of the build, if parameters were used, will be in a folder named
+by the configuration used:
+
+if the following command was run
+
+``SPI_4WIRE=0``
+
+then the folder name will be:
+
+``SPI4WIRE0``
 
 A more comprehensive build guide can be found in the :ref:`build_hdl` user guide.
 
@@ -187,19 +227,19 @@ HDL related
      - Documentation link
    * - AXI_CLKGEN
      - :git-hdl:`library/axi_dmac <library/axi_clkgen>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_clkgen>`
+     - :ref:`here <axi_clkgen>`
    * - AXI_DMAC
      - :git-hdl:`library/axi_dmac <library/axi_dmac>`
      - :ref:`here <axi_dmac>`
    * - AXI_HDMI_TX
      - :git-hdl:`library/axi_hdmi_tx <library/axi_hdmi_tx>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_hdmi_tx>`
+     - :ref:`here <axi_hdmi_tx>`
    * - AXI_I2S_ADI
      - :git-hdl:`library/axi_i2s_adi <library/axi_i2s_adi>`
      - ---
    * - AXI_PWM_GEN
      - :git-hdl:`library/axi_pwm_gen <library/axi_pwm_gen>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_pwm_gen>`
+     - :ref:`here <axi_pwm_gen>`
    * - AXI_SPDIF_TX
      - :git-hdl:`library/axi_spdif_tx <library/axi_spdif_tx>`
      - ---
@@ -208,7 +248,7 @@ HDL related
      - :ref:`here <spi_engine axi>`
    * - AXI_SYSID
      - :git-hdl:`library/axi_sysid <library/axi_sysid>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - SPI_ENGINE_EXECUTION
      - :git-hdl:`library/spi_engine/spi_engine_execution <library/spi_engine/spi_engine_execution>`
      - :ref:`here <spi_engine execution>`
@@ -220,7 +260,7 @@ HDL related
      - :ref:`here <spi_engine offload>`
    * - SYSID_ROM
      - :git-hdl:`library/sysid_rom <library/sysid_rom>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - UTIL_I2C_MIXER
      - :git-hdl:`library/util_i2c_mixer <library/util_i2c_mixer>`
      - :ref:`here <spi_engine offload>`

@@ -163,9 +163,10 @@ Building the HDL project
 -------------------------------------------------------------------------------
 
 The design is built upon ADI's generic HDL reference design framework.
-ADI does not distribute the bit/elf files of these projects so they
-must be built from the sources available :git-hdl:`here </>`. To get
-the source you must
+ADI distributes the bit/elf files of these projects as part of the
+:dokuwiki:`ADI Kuiper Linux <resources/tools-software/linux-software/kuiper-linux>`.
+If you want to build the sources, ADI makes them available on the
+:git-hdl:`HDL repository </>`. To get the source you must
 `clone <https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository>`__
 the HDL repository, and then build the project as follows:
 
@@ -228,7 +229,7 @@ HDL related
      - ---   
    * - AXI_HDMI_TX
      - :git-hdl:`library/axi_hdmi_tx <library/axi_hdmi_tx>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_hdmi_tx>`
+     - :ref:`here <axi_hdmi_tx>`
    * - AXI_I2S_ADI
      - :git-hdl:`library/axi_i2s_adi <library/axi_i2s_adi>`
      - ---
@@ -237,7 +238,7 @@ HDL related
      - ---
    * - AXI_SYSID
      - :git-hdl:`library/axi_sysid <library/axi_sysid>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - CN0363_DMA_SEQUENCER
      - :git-hdl:`library/cn0363/cn0363_dma_sequencer <library/cn0363/cn0363_dma_sequencer>`
      - :dokuwiki:`[Wiki] <resources/fpga/peripherals/cn0363/sequencer?s[]=dma&s[]=sequencer>`
@@ -261,7 +262,7 @@ HDL related
      - :ref:`here <spi_engine offload>`
    * - SYSID_ROM
      - :git-hdl:`library/sysid_rom <library/sysid_rom>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - UTIL_AXIS_RESIZE
      - :git-hdl:`library/util_axis_resize`
      - ---   

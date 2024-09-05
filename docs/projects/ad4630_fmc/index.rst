@@ -55,12 +55,13 @@ Zedboard, which is a low cost FPGA carrier board from Digilent, using a
 Zynq-7000 re-programmable SoC from Xilinx.
 
 Applications:
-  * Automatic test equipment
-  * Digital control loops
-  * Medical instrumentation
-  * Seismology
-  * Semiconductor manufacturing
-  * Scientific instrumentation
+
+* Automatic test equipment
+* Digital control loops
+* Medical instrumentation
+* Seismology
+* Semiconductor manufacturing
+* Scientific instrumentation
   
 Supported boards
 -------------------------------------------------------------------------------
@@ -170,7 +171,7 @@ Configuration modes
 The CLK_MODE configuration parameter defines clocking mode of the device's
 digital interface: Options: 0 - SPI mode, 1 - Echo-clock or Master clock mode
 
-The NUM_OF_SDI configutation parameter defines the number of MOSI lines of the
+The NUM_OF_SDI configuration parameter defines the number of MOSI lines of the
 SPI interface: Options: 1 - Interleaved mode, 2 - 1 lane per channel,
 4 - 2 lanes per channel, 8 - 4 lanes per channel
 
@@ -311,9 +312,10 @@ Building the HDL project
 -------------------------------------------------------------------------------
 
 The design is built upon ADI's generic HDL reference design framework.
-ADI does not distribute the bit/elf files of these projects so they
-must be built from the sources available :git-hdl:`here </>`. To get
-the source you must
+ADI distributes the bit/elf files of these projects as part of the
+:dokuwiki:`ADI Kuiper Linux <resources/tools-software/linux-software/kuiper-linux>`.
+If you want to build the sources, ADI makes them available on the
+:git-hdl:`HDL repository </>`. To get the source you must
 `clone <https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository>`__
 the HDL repository, and then build the project as follows:.
 
@@ -374,19 +376,19 @@ HDL related
      - ---
    * - AXI_CLKGEN
      - :git-hdl:`library/axi_clkgen`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_clkgen>`
+     - :ref:`here <axi_clkgen>`
    * - AXI_DMAC
      - :git-hdl:`library/axi_dmac`
      - :ref:`here <axi_dmac>`
    * - AXI_HDMI_TX
      - :git-hdl:`library/axi_hdmi_tx`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_hdmi_tx>`
+     - :ref:`here <axi_hdmi_tx>`
    * - AXI_I2S_ADI
      - :git-hdl:`library/axi_i2s_adi`
      - ---
    * - AXI_PWM_GEN
      - :git-hdl:`library/axi_pwm_gen`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_pwm_gen>`
+     - :ref:`here <axi_pwm_gen>`
    * - AXI_SPDIF_TX
      - :git-hdl:`library/axi_spdif_tx`
      - ---
@@ -407,7 +409,7 @@ HDL related
      - :ref:`here <spi_engine offload>`
    * - SYSID_ROM
      - :git-hdl:`library/sysid_rom`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - UTIL_I2C_MIXER
      - :git-hdl:`library/util_i2c_mixer <library/util_i2c_mixer>`
      - ---

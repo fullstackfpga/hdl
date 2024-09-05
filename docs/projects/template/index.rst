@@ -3,7 +3,7 @@
 .. _template_project:
 
 Project template
-================================================================================
+===============================================================================
 
 Overview
 -------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ another carrier. Take these tables as an example:**\ \*
      - Carrier
      - FMC slot
    * - :adi:`AD9081-FMCA-EBZ <EVAL-AD9081>`
-     - `A10SoC`_
+     - :intel:`A10SoC <content/www/us/en/products/details/fpga/arria/10/sx/products.html>`
      - FMCA
    * -
      - :xilinx:`VCK190`
@@ -452,9 +452,10 @@ Building the HDL project
 **\*YOU CAN KEEP THE FIRST PARAGRAPH SINCE IT IS GENERIC**\ \*
 
 The design is built upon ADI's generic HDL reference design framework.
-ADI does not distribute the bit/elf files of these projects so they
-must be built from the sources available :git-hdl:`here <>`. To get
-the source you must
+ADI distributes the bit/elf files of these projects as part of the
+:dokuwiki:`ADI Kuiper Linux <resources/tools-software/linux-software/kuiper-linux>`.
+If you want to build the sources, ADI makes them available on the
+:git-hdl:`HDL repository </>`. To get the source you must
 `clone <https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository>`__
 the HDL repository.
 
@@ -615,7 +616,7 @@ Systems related
 **THIS IS JUST AN EXAMPLE**
 
 -  :dokuwiki:`[Wiki] AD9081 & AD9082 & AD9988 & AD9986 Prototyping Platform User Guide <resources/eval/user-guides/ad9081_fmca_ebz>`
--  Here you can find all the quick start guides on wiki documentation:dokuwiki:`[Wiki] AD9081 Quick Start Guides <resources/eval/user-guides/ad9081_fmca_ebz/quickstart>`
+-  Here you can find all the quick start guides on wiki documentation :dokuwiki:`[Wiki] AD9081/AD9082/AD9986/AD9988 Quick Start Guides <resources/eval/user-guides/ad9081_fmca_ebz/quickstart>`
 
 Here you can find the quick start guides available for these evaluation boards:
 
@@ -678,42 +679,42 @@ HDL related
      - :ref:`here <axi_dmac>`
    * - AXI_SYSID
      - :git-hdl:`library/axi_sysid`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - SYSID_ROM
      - :git-hdl:`library/sysid_rom`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - UTIL_CPACK2
      - :git-hdl:`library/util_pack/util_cpack2`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/util_cpack>`
+     - :ref:`here <util_cpack2>`
    * - UTIL_UPACK2
      - :git-hdl:`library/util_pack/util_upack2`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/util_upack>`
+     - :ref:`here <util_cpack2>`
    * - UTIL_ADXCVR for AMD
      - :git-hdl:`library/xilinx/util_adxcvr`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/util_xcvr>`
+     - :ref:`here <util_adxcvr>`
    * - AXI_ADXCVR for Intel
      - :git-hdl:`library/intel/axi_adxcvr`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_adxcvr>`
+     - :ref:`here <axi_adxcvr>`
    * - AXI_ADXCVR for AMD
      - :git-hdl:`library/xilinx/axi_adxcvr`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_adxcvr>`
+     - :ref:`here <axi_adxcvr>`
    * - AXI_JESD204_RX
      - :git-hdl:`library/jesd204/axi_jesd204_rx`
-     - :dokuwiki:`[Wiki] <resources/fpga/peripherals/jesd204/axi_jesd204_rx>`
+     - :ref:`axi_jesd204_rx`
    * - AXI_JESD204_TX
      - :git-hdl:`library/jesd204/axi_jesd204_tx`
-     - :dokuwiki:`[Wiki] <resources/fpga/peripherals/jesd204/axi_jesd204_tx>`
+     - :ref:`axi_jesd204_tx`
    * - JESD204_TPL_ADC
      - :git-hdl:`library/jesd204/ad_ip_jesd204_tpl_adc`
-     - :dokuwiki:`[Wiki] <resources/fpga/peripherals/jesd204/jesd204_tpl_adc>`
+     - :ref:`ad_ip_jesd204_tpl_adc`
    * - JESD204_TPL_DAC
      - :git-hdl:`library/jesd204/ad_ip_jesd204_tpl_dac`
-     - :dokuwiki:`[Wiki] <resources/fpga/peripherals/jesd204/jesd204_tpl_dac>`
+     - :ref:`ad_ip_jesd204_tpl_dac`
 
 \**\* MENTION THESE for JESD reference designs \**\*
 
 -  :dokuwiki:`[Wiki] Generic JESD204B block designs <resources/fpga/docs/hdl/generic_jesd_bds>`
--  :dokuwiki:`[Wiki] JESD204B High-Speed Serial Interface Support <resources/fpga/peripherals/jesd204>`
+-  :ref:`jesd204`
 
 \**\* MENTION THIS for SPI Engine reference designs \**\*
 
@@ -733,9 +734,10 @@ and of the device tree.
 
    -  `AD9081 class documentation <https://analogdevicesinc.github.io/pyadi-iio/devices/adi.ad9081.html>`__
    -  `PyADI-IIO documentation <https://analogdevicesinc.github.io/pyadi-iio/>`__
+   -  `Example link`_
 
 .. include:: ../common/more_information.rst
 
 .. include:: ../common/support.rst
 
-.. _A10SoC: https://www.intel.com/content/www/us/en/products/details/fpga/development-kits/arria/10-sx.html
+.. _Example link: https://www.intel.com/content/www/us/en/products/details/fpga/development-kits/arria/10-sx.html

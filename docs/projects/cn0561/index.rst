@@ -32,7 +32,7 @@ are necessary to interact with the device using a Xilinx FPGA development
 board; to acquire data from the ADC device, supporting continuous data 
 capture at maximum 1.5 MSPS data rate. However, due to a hardware limitation, 
 the Cora-Z7s variant will only support a maximum data clock of 24MHz,
-in contrast with 48MHz supported on the Zedboard.
+in contrast with 50MHz supported on the Zedboard.
 
 Supported boards
 -------------------------------------------------------------------------------
@@ -185,9 +185,10 @@ Building the HDL project
 -------------------------------------------------------------------------------
 
 The design is built upon ADI's generic HDL reference design framework.
-ADI does not distribute the bit/elf files of these projects so they
-must be built from the sources available :git-hdl:`here </>`. To get
-the source you must
+ADI distributes the bit/elf files of these projects as part of the
+:dokuwiki:`ADI Kuiper Linux <resources/tools-software/linux-software/kuiper-linux>`.
+If you want to build the sources, ADI makes them available on the
+:git-hdl:`HDL repository </>`. To get the source you must
 `clone <https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository>`__
 the HDL repository, and then build the project as follows:.
 
@@ -224,25 +225,25 @@ HDL related
      - Documentation link
    * - AXI_CLKGEN
      - :git-hdl:`library/axi_clkgen`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_clkgen>`
+     - :ref:`here <axi_clkgen>`
    * - AXI_DMAC
      - :git-hdl:`library/axi_dmac`
      - :ref:`here <axi_dmac>`
    * - AXI_HDMI_TX **
      - :git-hdl:`library/axi_hdmi_tx`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_hdmi_tx>`
+     - :ref:`here <axi_hdmi_tx>`
    * - AXI_I2S_ADI *
      - :git-hdl:`library/axi_i2s_adi`
      - ---
    * - AXI_PWM_GEN
      - :git-hdl:`library/axi_pwm_gen`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_pwm_gen>`
+     - :ref:`here <axi_pwm_gen>`
    * - AXI_SDDIF_TX *
      - :git-hdl:`library/axi_spdif_tx`
      - ---
    * - AXI_SYSID
      - :git-hdl:`library/axi_sysid`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - AXI_SPI_ENGINE
      - :git-hdl:`library/spi_engine/axi_spi_engine`
      - :ref:`here <spi_engine axi>`
@@ -257,7 +258,7 @@ HDL related
      - :ref:`here <spi_engine offload>`
    * - AXI_SYSID_ROM
      - :git-hdl:`library/sysid_rom`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - UTIL_I2C_MIXER *
      - :git-hdl:`library/util_i2c_mixer`
      - ---

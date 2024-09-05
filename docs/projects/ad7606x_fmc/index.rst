@@ -38,6 +38,13 @@ Supported boards
 -  :adi:`EVAL-AD7606B <EVAL-AD7606B>`
 -  :adi:`EVAL-AD7606C-16 <AD7606C-16>`
 -  :adi:`EVAL-AD7606C-18 <EVAL-AD7606C-18>`
+-  :adi:`EVAL-AD7605-4 <EVAL-AD7605-4>`
+-  :adi:`EVAL-AD7606-8 <EVAL-AD7606>`
+-  :adi:`EVAL-AD7606-6 <EVAL-AD7606-6>`
+-  :adi:`EVAL-AD7606-4 <EVAL-AD7606-4>`
+-  :adi:`EVAL-AD7607 <EVAL-AD7607>`
+-  :adi:`EVAL-AD7608 <EVAL-AD7608>`
+-  :adi:`EVAL-AD7609 <EVAL-AD7609>`
 
 Supported devices
 -------------------------------------------------------------------------------
@@ -45,6 +52,12 @@ Supported devices
 -  :adi:`AD7606B`
 -  :adi:`AD7606C-16`
 -  :adi:`AD7606C-18`
+-  :adi:`AD7606`
+-  :adi:`AD7606-6`
+-  :adi:`AD7606-4`
+-  :adi:`AD7607`
+-  :adi:`AD7608`
+-  :adi:`AD7609`
 -  :adi:`ADP7118`
 -  :adi:`ADR4525`
 
@@ -113,18 +126,13 @@ In case of the **SERIAL** interface:
    -   JP5 - Position A - Serial interface
    -   JP5 - Position B - Parallel interface
 
-The DEV_CONFIG configuration parameter defines the device which will be used:
--  Options: 0 - AD7606B, 1 - AD7606C-16, 2 - AD7606C-18.
-By default it is set to 0.
-
 The NUM_OF_SDI configuration parameter defines the number of SDI lines used:
 -  Options: 1, 2, 4, 8.
 By default is set to 8.
 
-The EXT_CLK configuration parameter defines the external clock option for
-the ADC clock:
--  Options: 0 - No, 1 - Yes.
-By default is set to 0.
+The ADC_N_BITS configuration parameter specifies the ADC resolution:
+-  Options: 16, 18.
+By default it is set to 16.
 
 Jumper setup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -291,9 +299,10 @@ Building the HDL project
 -------------------------------------------------------------------------------
 
 The design is built upon ADI's generic HDL reference design framework.
-ADI does not distribute the bit/elf files of these projects so they
-must be built from the sources available :git-hdl:`here <main:/>`. To get
-the source you must
+ADI distributes the bit/elf files of these projects as part of the
+:dokuwiki:`ADI Kuiper Linux <resources/tools-software/linux-software/kuiper-linux>`.
+If you want to build the sources, ADI makes them available on the
+:git-hdl:`HDL repository </>`. To get the source you must
 `clone <https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository>`__
 the HDL repository, and then build the project as follows:.
 
@@ -310,11 +319,11 @@ by the configuration used:
 
 if the following command was run
 
-``make DEV_CONFIG=2 INTF=0``
+``make INTF=0 ADC_N_BITS=16``
 
 then the folder name will be:
 
-``DEVCONFIG2_INTF0``
+``INTF0_ADC_N_BITS16``
 
 A more comprehensive build guide can be found in the :ref:`build_hdl` user guide.
 
@@ -344,6 +353,13 @@ Hardware related
    -  :adi:`AD7606B`
    -  :adi:`AD7606C-16`
    -  :adi:`AD7606C-18`
+   -  :adi:`AD7605-4`
+   -  :adi:`AD7606`
+   -  :adi:`AD7606-6`
+   -  :adi:`AD7606-4`
+   -  :adi:`AD7607`
+   -  :adi:`AD7608`
+   -  :adi:`AD7609`
    -  :adi:`ADP7118`
    -  :adi:`ADR4525`
    -  :adi:`UG-1870, Evaluation Board User Guide <media/en/technical-documentation/user-guides/eval-ad7606c-fmcz-ug-1870.pdf>`
@@ -371,25 +387,25 @@ HDL related
      - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_ad7606x>`
    * - AXI_CLKGEN
      - :git-hdl:`library/axi_clkgen <library/axi_clkgen>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_clkgen>`
+     - :ref:`here <axi_clkgen>`
    * - AXI_DMAC
      - :git-hdl:`library/axi_dmac <library/axi_dmac>`
      - :ref:`here <axi_dmac>`
    * - AXI_HDMI_TX
      - :git-hdl:`library/axi_hdmi_tx <library/axi_hdmi_tx>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_hdmi_tx>`
+     - :ref:`here <axi_hdmi_tx>`
    * - AXI_I2S_ADI
      - :git-hdl:`library/axi_i2s_adi <library/axi_i2s_adi>`
      - ---
    * - AXI_PWM_GEN
      - :git-hdl:`library/axi_pwm_gen <library/axi_pwm_gen>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_pwm_gen>`
+     - :ref:`here <axi_pwm_gen>`
    * - AXI_SPDIF_TX
      - :git-hdl:`library/axi_spdif_tx <library/axi_spdif_tx>`
      - ---
    * - AXI_SYSID
      - :git-hdl:`library/axi_sysid <library/axi_sysid>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - AXI_SPI_ENGINE
      - :git-hdl:`library/spi_engine/axi_spi_engine <library/spi_engine/axi_spi_engine>`  **
      - :ref:`here <spi_engine axi>`
@@ -404,13 +420,13 @@ HDL related
      - :ref:`here <spi_engine offload>`
    * - SYSID_ROM
      - :git-hdl:`library/sysid_rom <library/sysid_rom>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - UTIL_I2C_MIXER
      - :git-hdl:`library/util_i2c_mixer <library/util_i2c_mixer>`
      - ---
    * - UTIL_CPACK2
      - :git-hdl:`library/util_pack/util_cpack2 <library/util_pack/util_cpack2>` *
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/util_cpack>`
+     - :ref:`here <util_cpack2>`
 
 .. admonition:: Legend
    :class: note

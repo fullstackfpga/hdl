@@ -8,7 +8,7 @@ Overview
 
 The :adi:`AD7380`/ :adi:`AD7381` are a 16-bit and 14-bit pin-compatible family
 of dual simultaneous sampling, high speed, low power, successive approximation
-register (SAR) analog-to-digital converters (ADCs) that operate from a 3.3 V 
+register (SAR) analog-to-digital converters (ADCs) that operate from a 3.3 V
 power supply and feature throughput rates up to 4 MSPS.The analog input type is
 differential for the :adi:`AD7380`, :adi:`AD7381`, :adi:`AD4680`, :adi:`AD4681`,
 :adi:`AD7380-4`, :adi:`AD7389-4`, :adi:`AD7381-4` can accepts a wide common-mode
@@ -19,28 +19,29 @@ pseudo-differential input while the :adi:`AD7386`, :adi:`AD7387`, :adi:`AD7388`,
 :adi:`AD4684` and :adi:`AD4685` have single-ended input. The AD7380 family has
 optional integrated on-chip oversampling blocks to improve dynamic range and
 reduce noise at lower bandwidths. An internal 2.5 V reference is included.
-Alternatively, an external reference up to 3.3 V can be used. 
+Alternatively, an external reference up to 3.3 V can be used.
 
 The conversion process and data acquisition use standard control inputs allowing
 for easy interfacing to microprocessors or DSPs. It is compatible with 1.8 V,
 2.5 V, and 3.3 V interfaces, using a separate logic supply.
 
-The dual :adi:`AD7380`, :adi:`AD7381`, :adi:`AD4680`, :adi:`AD4681`, 
+The dual :adi:`AD7380`, :adi:`AD7381`, :adi:`AD4680`, :adi:`AD4681`,
 :adi:`AD7383`, :adi:`AD7384`, :adi:`AD4682`, :adi:`AD4683`, :adi:`AD7386`,
 :adi:`AD7387`, :adi:`AD7388`, :adi:`AD4684` and :adi:`AD4685` family are
 available in a 16-lead 3mm x 3mm LFCSP package while the quad generics
-:adi:`AD7380-4`, :adi:`AD7389-4`, and :adi:`AD7381-4` are available in 
+:adi:`AD7380-4`, :adi:`AD7389-4`, and :adi:`AD7381-4` are available in
 4mmx4mm LFCSP package. Both the duals and quad generic operate in specified
 from -40°C to +125°C temperature range.
 
 Applications:
-  * Motor control position feedback
-  * Motor control current sense
-  * Data acquisition system
-  * EDFA applications
-  * I and Q demodulation
-  * SONAR
-  * Power Quality
+
+* Motor control position feedback
+* Motor control current sense
+* Data acquisition system
+* EDFA applications
+* I and Q demodulation
+* SONAR
+* Power Quality
 
 Supported boards
 -------------------------------------------------------------------------------
@@ -55,12 +56,18 @@ Supported devices
 -------------------------------------------------------------------------------
 
 -  :adi:`AD7380`
+-  :adi:`AD7380-4`
 -  :adi:`AD7381`
+-  :adi:`AD7381-4`
 -  :adi:`AD7383`
+-  :adi:`AD7383-4`
 -  :adi:`AD7384`
+-  :adi:`AD7384-4`
 -  :adi:`AD7386`
 -  :adi:`AD7387`
 -  :adi:`AD7388`
+-  :adi:`AD7388-4`
+-  :adi:`AD7389-4`
 -  :adi:`AD4680`
 -  :adi:`AD4681`
 -  :adi:`AD4682`
@@ -86,6 +93,35 @@ The data path and clock domains are depicted in the below diagram:
    :align: center
    :alt: AD738X_FMC block diagram
 
+Configuration modes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ALERT_SPI_N configuration parameter defines if a known pin will operate as a
+serial data output pin or alert indication pin. By default it is set to 0.
+Depending on the required pin functionality, some hardware modifications need to
+be done on the board and/or ``make`` command:
+
+In case of the **Serial Data Output Pin** functionality:
+
+.. code-block::
+
+   make ALERT_SPI_N=0
+
+In case of the **Alert Indication Output Pin** functionality:
+
+.. code-block::
+
+   make ALERT_SPI_N=1
+
+The NUM_OF_SDI configuration parameter defines the number of SDI lines used:
+-  Options: 1, 2, 4.
+By default is set to 1.
+
+For the ALERT functionality, the following parameters will be used in make
+command: ALERT_SPI_N.
+For the serial data output functionality, the following parameters will be
+used in make command: ALERT_SPI_N, NUM_OF_SDI.
+
 Jumper setup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -98,17 +134,17 @@ LK3                1                 Use 12 V power supply from FMC
 LK4                3                 Use internal +3V3 from U3 for VREF
 LK5                3                 Use internal 2.3 V from U6 for VLOGIC
 JP1                1 (SMD RES)       Connect external SubMiniature Version B
-                                     (SMB) Connector J1 to the A1 buffer 
+                                     (SMB) Connector J1 to the A1 buffer
                                      amplifier
 JP2                1 (SMD RES)       Connect internal signal from A2 to ADC U10
-                                     input AINA- 
+                                     input AINA-
 JP3                1 (SMD RES)       Connect internal signal from A2 to ADC U10
-                                     input AINA+ 
+                                     input AINA+
 JP4                3 (SMD RES)       The REFIO pin is driven with the external
-                                     on board reference     
-JP5                1 (SMD RES)       Use internal +3V3 from U2 for VCC. 
+                                     on board reference
+JP5                1 (SMD RES)       Use internal +3V3 from U2 for VCC.
 JP6                1 (SMD RES)       Connect external SMB Connector J2 to the
-                                     A1 buffer amplifier        
+                                     A1 buffer amplifier
 ================== ================= ==========================================
 
 CPU/Memory interconnects addresses
@@ -165,6 +201,42 @@ SPI connections
      - ad738x
      - 0
 
+GPIOs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Software GPIO number is calculated as follows:
+
+-  Zynq-7000: if PS7 is used, then the offset is 54
+
+.. list-table::
+   :widths: 25 25 25 25 25 25
+   :header-rows: 2
+
+   * - GPIO signal
+     - Direction
+     - HDL GPIO EMIO
+     - Software GPIO
+     - Assigned value
+     - Assigned value
+   * -
+     - (from FPGA view)
+     -
+     - Zynq-7000
+     - ALERT_SPI_N=1
+     - ALERT_SPI_N=0
+   * - gpio[33]
+     - OUT
+     - 33
+     - 87
+     - sdid
+     - 0
+   * - gpio[32]
+     - OUT
+     - 32
+     - 86
+     - sdib
+     - 0
+
 Interrupts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -181,9 +253,10 @@ Building the HDL project
 -------------------------------------------------------------------------------
 
 The design is built upon ADI's generic HDL reference design framework.
-ADI does not distribute the bit/elf files of these projects so they
-must be built from the sources available :git-hdl:`here </>`. To get
-the source you must
+ADI distributes the bit/elf files of these projects as part of the
+:dokuwiki:`ADI Kuiper Linux <resources/tools-software/linux-software/kuiper-linux>`.
+If you want to build the sources, ADI makes them available on the
+:git-hdl:`HDL repository </>`. To get the source you must
 `clone <https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository>`__
 the HDL repository, and then build the project as follows:
 
@@ -193,7 +266,18 @@ the HDL repository, and then build the project as follows:
    :linenos:
 
    user@analog:~$ cd hdl/projects/ad738x_fmc/zed
-   user@analog:~/hdl/projects/ad738x_fmc/zed$ make
+   user@analog:~/hdl/projects/ad738x_fmc/zed$ make ALERT_SPI_N=0 NUM_OF_SDI=4
+
+The result of the build, if parameters were used, will be in a folder named
+by the configuration used:
+
+if the following command was run
+
+``make ALERT_SPI_N=0 NUM_OF_SDI=4``
+
+then the folder name will be:
+
+``ALERTSPIN0_NUMOFSDI4``
 
 A more comprehensive build guide can be found in the :ref:`build_hdl` user guide.
 
@@ -206,12 +290,18 @@ Hardware related
 -  Product datasheets:
 
    -  :adi:`AD7380`
+   -  :adi:`AD7380-4`
    -  :adi:`AD7381`
+   -  :adi:`AD7381-4`
    -  :adi:`AD7383`
+   -  :adi:`AD7383-4`
    -  :adi:`AD7384`
+   -  :adi:`AD7384-4`
    -  :adi:`AD7386`
    -  :adi:`AD7387`
    -  :adi:`AD7388`
+   -  :adi:`AD7388-4`
+   -  :adi:`AD7389-4`
    -  :adi:`AD4680`
    -  :adi:`AD4681`
    -  :adi:`AD4682`
@@ -234,25 +324,25 @@ HDL related
      - Documentation link
    * - AXI_CLKGEN
      - :git-hdl:`library/axi_dmac <library/axi_clkgen>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_clkgen>`
+     - :ref:`here <axi_clkgen>`
    * - AXI_DMAC
      - :git-hdl:`library/axi_dmac <library/axi_dmac>`
      - :ref:`here <axi_dmac>`
    * - AXI_HDMI_TX
      - :git-hdl:`library/axi_hdmi_tx <library/axi_hdmi_tx>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_hdmi_tx>`
+     - :ref:`here <axi_hdmi_tx>`
    * - AXI_I2S_ADI
      - :git-hdl:`library/axi_i2s_adi <library/axi_i2s_adi>`
      - ---
    * - AXI_PWM_GEN
      - :git-hdl:`library/axi_pwm_gen <library/axi_pwm_gen>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_pwm_gen>`
+     - :ref:`here <axi_pwm_gen>`
    * - AXI_SPDIF_TX
      - :git-hdl:`library/axi_spdif_tx <library/axi_spdif_tx>`
      - ---
    * - AXI_SYSID
      - :git-hdl:`library/axi_sysid <library/axi_sysid>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - AXI_SPI_ENGINE
      - :git-hdl:`library/spi_engine/axi_spi_engine <library/spi_engine/axi_spi_engine>`
      - :ref:`here <spi_engine axi>`
@@ -264,10 +354,10 @@ HDL related
      - :ref:`here <spi_engine interconnect>`
    * - SPI_ENGINE_OFFLOAD
      - :git-hdl:`library/spi_engine/spi_engine_offload <library/spi_engine/spi_engine_offload>`
-     - :ref:`here <spi_engine offload>`  
+     - :ref:`here <spi_engine offload>`
    * - SYSID_ROM
      - :git-hdl:`library/sysid_rom <library/sysid_rom>`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - UTIL_I2C-MIXER
      - :git-hdl:`library/util_i2c_mixer <library/util_i2c_mixer>`
      - ---

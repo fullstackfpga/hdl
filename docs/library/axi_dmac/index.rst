@@ -1,13 +1,13 @@
 .. _axi_dmac:
 
-High-Speed DMA Controller
+AXI DMAC
 ================================================================================
 
 .. hdl-component-diagram::
 
-The AXI DMAC is a high-speed, high-throughput, general purpose DMA controller
-intended to be used to transfer data between system memory and other peripherals
-like high-speed converters.
+The :git-hdl:`AXI DMA Controller <library/axi_dmac>` IP core is a high-speed,
+high-throughput, general purpose DMA controller intended to be used to transfer
+data between system memory and other peripherals like high-speed converters.
 
 Features
 --------------------------------------------------------------------------------
@@ -102,6 +102,8 @@ Configuration Parameters
      - Whether to insert an extra register slice on the source data path.
    * - AXI_SLICE_SRC
      - Whether to insert an extra register slice on the destination data path.
+   * - AXIS_TUSER_SYNC
+     - Transfer Start Synchronization on TUSER
    * - SYNC_TRANSFER_START
      - Enable the transfer start synchronization feature.
    * - CYCLIC
@@ -256,7 +258,7 @@ De-assertion of the reset signal should by synchronous to ``s_axi_aclk``.
 Data Interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-AXI-Streaming slave
+AXI-Streaming subordinate
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 The interface back-pressures through the ``s_axis_ready`` signal. If the core is
@@ -602,7 +604,7 @@ the following order:
      - id
      - This field corresponds to an identifier of the descriptor.
    * - 64‑bit
-     - dest_addr 
+     - dest_addr
      - This field contains the destination address of the transfer.
    * - 64‑bit
      - src_addr
@@ -617,7 +619,7 @@ the following order:
      - x_len
      - This field contains the number of bytes to transfer, minus one.
    * - 32‑bit
-     - src_stride 
+     - src_stride
      - This field contains the number of bytes between the start of one row and
        the next row for the source address.
    * - 32-bit
@@ -656,19 +658,32 @@ of the application.
 Transfer Start Synchronization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If the transfer start synchronization feature of the DMA controller is enabled
-the start of a transfer is synchronized to a flag in the data stream. This is
-primarily useful if the data stream does not have any back-pressure and one unit
+If the ``SYNC_TRANSFER_START`` HDL synthesis configuration parameter is set, the
+transfer start synchronization feature of the DMA controller is enabled. This
+means that the start of a transfer is synchronized to a flag in the data stream
+or a sync signal.
+
+This is useful if the data stream does not have any back-pressure and one unit
 of data spans multiple beats (e.g. packetized data). This ensures that the data
 is properly aligned to the beginning of the memory buffer.
 
-Data that is received before the synchronization flag is asserted will be
-ignored by the DMA controller.
+In addition, this feature allows the implementation of external timing
+synchronization for precisely timed buffers (For example, in combination with the
+:git-hdl:`Timing-Division Duplexing Controller <library/axi_tdd>`).
 
-For the FIFO write interface the ``fifo_wr_sync`` signal is the synchronization
-flag signal. For the AXI-Streaming interface the synchronization flag is carried
-in ``s_axis_user[0]``. In both cases the synchronization flag is qualified by
-the same control signal as the data.
+On the transmit side, both the FIFO and AXI-Streaming interfaces use the ``sync``
+signal as the synchronization signal.
+
+On the receive side, for the FIFO write interface the ``sync`` signal represents
+the synchronization flag signal. For the AXI-Streaming interface the synchronization
+signal is carried in either ``s_axis_user[0]`` or ``sync``, depending on the
+value of ``S_AXIS_USER_SYNC`` synthesis configuration parameter. In both cases
+the synchronization signal is qualified by the same control signal as the data.
+
+.. note::
+
+   The synchronization signal is assumed to be synchronous with the clock of the
+   interface which needs to be triggered by the transfer start synchronization.
 
 Cache Coherency
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -801,3 +816,17 @@ Glossary
        is based on the ``X_LENGTH`` and ``Y_LENGTH`` registers. This can occur
        on AXIS source interfaces when TLAST asserts earlier than the programmed
        length.
+
+Software Support
+--------------------------------------------------------------------------------
+
+* No-OS project at :git-no-OS:`drivers/axi_core/axi_dmac`
+* No-OS device driver at  :git-no-OS:`drivers/axi_core/axi_dmac/axi_dmac.c`
+* No-OS device driver documentation
+  :dokuwiki:`on wiki <resources/tools-software/uc-drivers/jesd204/axi_adxcvr>`
+
+References
+--------------------------------------------------------------------------------
+
+* HDL IP core at :git-hdl:`library/axi_dmac`
+* :dokuwiki:`High-Speed DMA Controller Peripheral on wiki <resources/fpga/docs/axi_dmac>`

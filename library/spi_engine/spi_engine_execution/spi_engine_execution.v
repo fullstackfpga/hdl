@@ -1,6 +1,6 @@
 // ***************************************************************************
 // ***************************************************************************
-// Copyright (C) 2015-2023 Analog Devices, Inc. All rights reserved.
+// Copyright (C) 2015-2024 Analog Devices, Inc. All rights reserved.
 //
 // In this HDL repository, there are many different and unique modules, consisting
 // of various HDL (Verilog or VHDL) components. The individual modules are
@@ -76,10 +76,11 @@ module spi_engine_execution #(
   output reg three_wire
 );
 
-  localparam CMD_TRANSFER = 2'b00;
-  localparam CMD_CHIPSELECT = 2'b01;
-  localparam CMD_WRITE = 2'b10;
-  localparam CMD_MISC = 2'b11;
+  localparam CMD_TRANSFER = 3'b000;
+  localparam CMD_CHIPSELECT = 3'b001;
+  localparam CMD_WRITE = 3'b010;
+  localparam CMD_MISC = 3'b011;
+  localparam CMD_CS_INV = 3'b100;
 
   localparam MISC_SYNC = 1'b0;
   localparam MISC_SLEEP = 1'b1;
@@ -133,6 +134,9 @@ module spi_engine_execution #(
   reg cpha = DEFAULT_SPI_CFG[0];
   reg cpol = DEFAULT_SPI_CFG[1];
   reg [7:0] clk_div = DEFAULT_CLK_DIV;
+  reg sdo_idle_state = SDO_DEFAULT;
+
+  reg [NUM_OF_CS-1:0] cs_inv_mask_reg = 'h0;
 
   reg sdo_enabled = 1'b0;
   reg sdi_enabled = 1'b0;
@@ -141,12 +145,12 @@ module spi_engine_execution #(
 
   reg [SDI_DELAY+1:0] trigger_rx_d = {(SDI_DELAY+2){1'b0}};
 
-  wire [1:0] inst = cmd[13:12];
-  wire [1:0] inst_d1 = cmd_d1[13:12];
+  wire [2:0] inst = cmd[14:12];
+  wire [2:0] inst_d1 = cmd_d1[14:12];
 
   wire exec_cmd = cmd_ready && cmd_valid;
   wire exec_transfer_cmd = exec_cmd && inst == CMD_TRANSFER;
-
+  wire exec_cs_inv_cmd = exec_cmd && inst == CMD_CS_INV;
   wire exec_write_cmd = exec_cmd && inst == CMD_WRITE;
   wire exec_chipselect_cmd = exec_cmd && inst == CMD_CHIPSELECT;
   wire exec_misc_cmd = exec_cmd && inst == CMD_MISC;
@@ -159,7 +163,7 @@ module spi_engine_execution #(
   wire cs_sleep_counter_compare;
   wire cs_sleep_early_exit;
   reg cs_sleep_repeat;
-  reg cs_active;
+  reg cs_activate;
 
   wire io_ready1;
   wire io_ready2;
@@ -206,6 +210,7 @@ module spi_engine_execution #(
       cpha <= DEFAULT_SPI_CFG[0];
       cpol <= DEFAULT_SPI_CFG[1];
       three_wire <= DEFAULT_SPI_CFG[2];
+      sdo_idle_state <= SDO_DEFAULT;
       clk_div <= DEFAULT_CLK_DIV;
       word_length <= DATA_WIDTH;
       left_aligned <= 8'b0;
@@ -214,6 +219,7 @@ module spi_engine_execution #(
         cpha <= cmd[0];
         cpol <= cmd[1];
         three_wire <= cmd[2];
+        sdo_idle_state <= cmd[3];
       end else if (cmd[9:8] == REG_CLK_DIV) begin
         clk_div <= cmd[7:0];
       end else if (cmd[9:8] == REG_WORD_LENGTH) begin
@@ -245,7 +251,7 @@ module spi_engine_execution #(
   assign trigger_tx = trigger == 1'b1 && ntx_rx == 1'b0;
   assign trigger_rx = trigger == 1'b1 && ntx_rx == 1'b1;
 
-  assign sleep_counter_compare = sleep_counter == cmd_d1[7:0];
+  assign sleep_counter_compare = sleep_counter == cmd_d1[7:0]+1;
   assign cs_sleep_counter_compare = cs_sleep_counter == cmd_d1[9:8];
   assign cs_sleep_early_exit = (cmd_d1[9:8] == 2'b00);
 
@@ -265,8 +271,8 @@ module spi_engine_execution #(
     if (idle == 1'b1 || (cs_sleep_counter_compare && !cs_sleep_repeat && inst_d1 == CMD_CHIPSELECT)) begin
       counter <= 'h00;
     end else if (clk_div_last == 1'b1 && wait_for_io == 1'b0) begin
-      if (bit_counter == word_length) begin
-        counter <= (counter & BIT_COUNTER_CLEAR) + (transfer_active ? 'h1 : (2**BIT_COUNTER_WIDTH)) + BIT_COUNTER_CARRY;
+      if (bit_counter == word_length && transfer_active) begin
+        counter <= (counter & BIT_COUNTER_CLEAR) + 'h1 + BIT_COUNTER_CARRY;
       end else begin
         counter <= counter + (transfer_active ? 'h1 : (2**BIT_COUNTER_WIDTH));
       end
@@ -306,11 +312,21 @@ module spi_engine_execution #(
     end
   end
 
+  always @(posedge clk ) begin
+    if (resetn == 1'b0) begin
+      cs_inv_mask_reg <= 'h0;
+    end else begin
+      if (exec_cs_inv_cmd == 1'b1) begin
+        cs_inv_mask_reg <= cmd[NUM_OF_CS-1:0];
+      end
+    end
+  end
+
   always @(posedge clk) begin
     if (resetn == 1'b0) begin
       cs <= 'hff;
     end else if (cs_gen) begin
-      cs <= cmd_d1[NUM_OF_CS-1:0];
+      cs <= cmd_d1[NUM_OF_CS-1:0]^cs_inv_mask_reg[NUM_OF_CS-1:0];
     end
   end
 
@@ -388,8 +404,8 @@ module spi_engine_execution #(
   // Load the SDO parallel data into the SDO shift register. In case of a custom
   // data width, additional bit shifting must done at load.
   always @(posedge clk) begin
-    if ((inst_d1 == CMD_TRANSFER) && (!sdo_enabled)) begin
-      data_sdo_shift <= {DATA_WIDTH{SDO_DEFAULT}};
+    if (!sdo_enabled || (inst_d1 != CMD_TRANSFER)) begin
+      data_sdo_shift <= {DATA_WIDTH{sdo_idle_state}};
     end else if (transfer_active == 1'b1 && trigger_tx == 1'b1) begin
       if (first_bit == 1'b1)
         data_sdo_shift <= sdo_data << left_aligned;
@@ -422,10 +438,10 @@ module spi_engine_execution #(
   // interface.
 
   always @(posedge clk) begin
-    if (!resetn) begin // set cs_active during reset for a cycle to clear shift reg
-      cs_active <= 1;
+    if (!resetn) begin // set cs_activate during reset for a cycle to clear shift reg
+      cs_activate <= 1;
     end else begin
-      cs_active <= ~(&cmd_d1[NUM_OF_CS-1:0]) & cs_gen;
+      cs_activate <= ~(&cmd_d1[NUM_OF_CS-1:0]) & cs_gen;
     end
   end
 
@@ -446,8 +462,8 @@ module spi_engine_execution #(
       for (i=0; i<NUM_OF_SDI; i=i+1) begin: g_sdi_shift_reg
         reg [DATA_WIDTH-1:0] data_sdi_shift;
 
-        always @(negedge echo_sclk or posedge cs_active) begin
-          if (cs_active) begin
+        always @(negedge echo_sclk or posedge cs_activate) begin
+          if (cs_activate) begin
             data_sdi_shift <= 0;
           end else begin
             data_sdi_shift <= {data_sdi_shift, sdi[i]};
@@ -462,8 +478,8 @@ module spi_engine_execution #(
 
       end
 
-      always @(posedge echo_sclk or posedge cs_active) begin
-        if (cs_active) begin
+      always @(posedge echo_sclk or posedge cs_activate) begin
+        if (cs_activate) begin
           sdi_counter <= 8'b0;
           sdi_counter_d <= 8'b0;
         end else begin
@@ -477,8 +493,8 @@ module spi_engine_execution #(
       // MISO shift register runs on positive echo_sclk
       for (i=0; i<NUM_OF_SDI; i=i+1) begin: g_sdi_shift_reg
         reg [DATA_WIDTH-1:0] data_sdi_shift;
-        always @(posedge echo_sclk or posedge cs_active) begin
-          if (cs_active) begin
+        always @(posedge echo_sclk or posedge cs_activate) begin
+          if (cs_activate) begin
             data_sdi_shift <= 0;
           end else begin
             data_sdi_shift <= {data_sdi_shift, sdi[i]};
@@ -491,8 +507,8 @@ module spi_engine_execution #(
         end
       end
 
-      always @(posedge echo_sclk or posedge cs_active) begin
-        if (cs_active) begin
+      always @(posedge echo_sclk or posedge cs_activate) begin
+        if (cs_activate) begin
           sdi_counter <= 8'b0;
           sdi_counter_d <= 8'b0;
         end else begin
@@ -511,7 +527,7 @@ module spi_engine_execution #(
 
     reg [3:0] last_sdi_bit_m = 4'b0;
     always @(posedge clk) begin
-      if (cs_active) begin
+      if (cs_activate) begin
         last_sdi_bit_m <= 4'b0;
       end else begin
         last_sdi_bit_m <= {last_sdi_bit_m, last_sdi_bit};
@@ -519,7 +535,7 @@ module spi_engine_execution #(
     end
 
     always @(posedge clk) begin
-      if (cs_active) begin
+      if (cs_activate) begin
         sdi_data_valid <= 1'b0;
       end else if (sdi_enabled == 1'b1 &&
                    last_sdi_bit_m[3] == 1'b0 &&
@@ -531,7 +547,7 @@ module spi_engine_execution #(
     end
 
     always @(posedge clk) begin
-      if (cs_active) begin
+      if (cs_activate) begin
         num_of_transfers <= 8'b0;
       end else begin
         if (cmd_d1[15:12] == 4'b0) begin
@@ -541,7 +557,7 @@ module spi_engine_execution #(
     end
 
     always @(posedge clk) begin
-      if (cs_active) begin
+      if (cs_activate) begin
         sdi_transfer_counter <= 0;
       end else if (last_sdi_bit_m[2] == 1'b0 &&
                    last_sdi_bit_m[1] == 1'b1) begin
@@ -562,7 +578,7 @@ module spi_engine_execution #(
       reg [DATA_WIDTH-1:0] data_sdi_shift;
 
       always @(posedge clk) begin
-        if (cs_active) begin
+        if (cs_activate) begin
           data_sdi_shift <= 0;
         end else begin
           if (trigger_rx_s == 1'b1) begin

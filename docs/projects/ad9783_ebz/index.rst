@@ -1,4 +1,4 @@
-.. _ad9783_ebz_hdl:
+.. _ad9783_ebz:
 
 AD9783-EBZ HDL project
 ===============================================================================
@@ -106,9 +106,10 @@ Building the HDL project
 -------------------------------------------------------------------------------
 
 The design is built upon ADI's generic HDL reference design framework.
-ADI does not distribute the bit/elf files of these projects so they
-must be built from the sources available :git-hdl:`here </>`. To get
-the source you must
+ADI distributes the bit/elf files of these projects as part of the
+:dokuwiki:`ADI Kuiper Linux <resources/tools-software/linux-software/kuiper-linux>`.
+If you want to build the sources, ADI makes them available on the
+:git-hdl:`HDL repository </>`. To get the source you must
 `clone <https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository>`__
 the HDL repository, and then build the project as follows:
 
@@ -174,19 +175,19 @@ HDL related
      - Documentation link
    * - AXI_AD9783
      - :git-hdl:`library/axi_ad9783`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_ad9783>`
+     - :ref:`here <axi_ad9783>`
    * - AXI_DMAC
      - :git-hdl:`library/axi_dmac`
      - :ref:`here <axi_dmac>`
    * - AXI_SYSID
      - :git-hdl:`library/axi_sysid`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - SYSID_ROM
      - :git-hdl:`library/sysid_rom`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/axi_sysid>`
+     - :ref:`here <axi_sysid>`
    * - UTIL_UPACK2
      - :git-hdl:`library/util_pack/util_upack2`
-     - :dokuwiki:`[Wiki] <resources/fpga/docs/util_upack>`
+     - :ref:`here <util_cpack2>`
 
 Software related
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

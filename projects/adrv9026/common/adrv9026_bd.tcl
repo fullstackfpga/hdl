@@ -133,7 +133,7 @@ ad_connect  $sys_cpu_resetn util_adrv9026_xcvr/up_rstn
 ad_connect  $sys_cpu_clk util_adrv9026_xcvr/up_clk
 
 # Tx
-ad_xcvrcon util_adrv9026_xcvr axi_adrv9026_tx_xcvr axi_adrv9026_tx_jesd {2 3 1 0} core_clk
+ad_xcvrcon util_adrv9026_xcvr axi_adrv9026_tx_xcvr axi_adrv9026_tx_jesd {3 2 0 1} core_clk
 ad_xcvrpll $tx_ref_clk util_adrv9026_xcvr/qpll_ref_clk_0
 ad_xcvrpll axi_adrv9026_tx_xcvr/up_pll_rst util_adrv9026_xcvr/up_qpll_rst_0
 ad_xcvrpll $tx_ref_clk util_adrv9026_xcvr/qpll_ref_clk_4
@@ -200,6 +200,7 @@ ad_connect  rx_adrv9026_tpl_core/adc_dovf util_adrv9026_rx_cpack/fifo_wr_overflo
 
 ad_connect  core_clk axi_adrv9026_rx_dma/fifo_wr_clk
 ad_connect  util_adrv9026_rx_cpack/packed_fifo_wr axi_adrv9026_rx_dma/fifo_wr
+ad_connect  util_adrv9026_rx_cpack/packed_sync axi_adrv9026_rx_dma/sync
 
 # interconnect (cpu)
 
